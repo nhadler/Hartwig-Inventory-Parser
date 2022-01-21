@@ -15,24 +15,19 @@ import argparse  # command line arguments
 
 
 # modules
-def prepare_datasets(barcode_csv, inventory_csv):
+def prepare_inventory(inventory_csv):
     """Cleans up the barcode and library CSV datasets, returns prepared dataframes.
 
     Args:
-        barcode_csv (pandas_dataframe):
-            csv file that contains the list of barcodes
         library_csv (pandas_dataframe):
             csv file that contains the Hartwig inventory database
 
     Returns:
-        df_barcodes (pandas_dataframe):
-            dataframe containing cleaned up barcode list
         df_library (pandas_dataframe):
             dataframe containing cleaned up library
     """
     # Read in inventory and user submitted barcode CSVs
     df_inventory = inventory_csv
-    df_barcodes = barcode_csv
 
     # Adding a catinated 'Mass' Column
     mass = df_inventory["Amount"].str.cat(df_inventory.Unit, sep=" ", na_rep="Missing")
@@ -46,22 +41,20 @@ def prepare_datasets(barcode_csv, inventory_csv):
         columns=["Amount", "Unit", "Type of container", "MolID", "Supplier"]
     )
 
-    # Renaming user submitted barcode column
-    df_barcodes = df_barcodes.rename(
-        {"Barcode (separate multiple barcodes via with comma):": "Barcode"}, axis=1
-    )
-    df_barcodes = df_barcodes[["Timestamp", "Barcode"]]
-
-    return df_inventory, df_barcodes
+    return df_inventory
 
 
-def match_barcodes_return_excel(df_barcode, df_inventory):
+def match_barcodes_return_excel(df_barcode, df_inventory, filename):
     """Creates an excel sheet containing chemicals found on the barcode sheet
     and their pertinent information.
 
     Args:
-        df_barcode (pandas dataframe): cleaned dataframe of the barcodes
-        df_library (pandas dataframe): cleaned dataframe of the iventory
+        df_barcode (pandas dataframe):
+            cleaned dataframe of the barcodes
+        df_library (pandas dataframe):
+            cleaned dataframe of the iventory
+        filename (string):
+            user selected filename of exported excel sheet
     """
     # Creates a new dataframe containing barcode chemicals
     df = df_barcode.merge(df_inventory, on="Barcode", how="left")
@@ -71,9 +64,11 @@ def match_barcodes_return_excel(df_barcode, df_inventory):
         ["Name", "CASNumber", "Mass", "Storage name", "Compartment name", "Barcode"]
     ].rename({"CASNumber": "CAS"}, axis=1)
 
-    # Makes the CSV file.
+    filename = filename + ".xlsx"
+
+    # Makes the Excel file.
     df.to_excel(
-        "Ligand Library.xlsx",
+        filename,
         index=False,
     )
 
@@ -89,18 +84,23 @@ if __name__ == "__main__":
     )
 
     # Adds command line arguments for selecting the barcode and inventory CSV
-    parser.add_argument("-B", "--Barcode", help="CSV file containing the barcodes")
+    parser.add_argument("barcode.csv", help="CSV file containing the barcodes")
     parser.add_argument(
-        "-I", "--Inventory", help="CSV file containing the current inventory"
+        "inventory.csv", help="CSV file containing the current inventory"
+    )
+    parser.add_argument(
+        "filename", help="Type the filename you want of the generated excel sheet."
     )
     args = vars(parser.parse_args())
 
     # Read in CSV files
-    barcode_csv = pd.read_csv(args["Barcode"])
-    inventory_csv = pd.read_csv(args["Inventory"])
+    barcode_csv = pd.read_csv(args["barcode.csv"])
+    print(barcode_csv.head())
+    inventory_csv = pd.read_csv(args["inventory.csv"])
+    print(inventory_csv.head())
 
     # Call data clean up function
-    df_barcodes, df_inventory = prepare_datasets(barcode_csv, inventory_csv)
+    df_inventory = prepare_inventory(inventory_csv)
 
     # Call excel sheet making function
-    match_barcodes_return_excel(df_barcodes, df_inventory)
+    match_barcodes_return_excel(barcode_csv, df_inventory, args["filename"])
