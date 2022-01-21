@@ -95,9 +95,7 @@ if __name__ == "__main__":
 
     # Read in CSV files
     barcode_csv = pd.read_csv(args["barcode.csv"])
-    print(barcode_csv.head())
     inventory_csv = pd.read_csv(args["inventory.csv"])
-    print(inventory_csv.head())
 
     # Call data clean up function
     df_inventory = prepare_inventory(inventory_csv)
