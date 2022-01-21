@@ -48,6 +48,8 @@ The `barcode.csv` file should be a single column CSV file with the first row con
 python hartwig_inv_parser.py barcodes.csv 01202022.csv ligands
 ```
 
+This creates an excel file named ligands.xlsx.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change or email me at nhadler@berkeley.edu.
 
