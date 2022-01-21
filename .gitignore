@@ -3,3 +3,5 @@
 /env
 /inventory011922.csv
 /setup.cfg
+*.csv
+*.xlsx
