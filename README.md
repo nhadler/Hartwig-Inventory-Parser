@@ -36,7 +36,7 @@ The `inventory.csv` file is obtained from [open-enventory](https://inventory-cch
 
 Make sure to select `RS_style` and leave the option `Room numbers separated by semicolons` blank.
 
-Click down and save the text file. Open this file with Microsoft Excel and then `Save As` as a CSV file. This is then ready to be used by the script.
+Click download and save the text file. Open this file with Microsoft Excel and then `Save As` as a CSV file. This is then ready to be used by the script.
 
 ### Preparing the barcode.csv file:
 
