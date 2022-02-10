@@ -13,7 +13,6 @@ import argparse  # command line arguments
 
 import pandas as pd  # to handle the csv and data processing
 
-
 # modules
 def prepare_inventory(inventory_csv):
     """Cleans up the barcode and library CSV datasets, returns prepared dataframes.
